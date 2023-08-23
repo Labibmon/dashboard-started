@@ -1,5 +1,7 @@
+import Button from "@/components/commons/button";
+
 export default function Home() {
     return(
-        <>Hallo</>
+        <Button variant='primary'>Hallo</Button>
     )
 }
