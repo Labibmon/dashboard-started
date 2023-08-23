@@ -3,13 +3,16 @@ import { ThemeInterface } from "@/pages/_app";
 
 interface ButtonProps {
   size?: keyof ThemeInterface['size']
-  colorScheme?: keyof ThemeInterface['colors']
+  variant?: keyof ThemeInterface['colors']
   outline?: boolean
 }
 
-const Button = styled.button.attrs<ButtonProps>(
-  ({ colorScheme }) => ({
-    colorScheme: colorScheme || 'primary'
+const Button = styled.button.withConfig({
+  shouldForwardProp: (prop) =>
+    !['variant'].includes(prop),
+}).attrs<ButtonProps>(
+  ({ variant }) => ({
+    variant: variant || 'primary'
   })
 )`
   cursor: pointer;
@@ -29,10 +32,10 @@ const Button = styled.button.attrs<ButtonProps>(
 `
 
 const dynamicStyles = (props: any) => {
-  const { colorScheme, outline, theme } = props;
+  const { variant, outline, theme } = props;
 
-  const color = outline ? theme.colors[colorScheme] : 'white';
-  const background = outline ? 'transparent' : theme.colors[colorScheme];
+  const color = outline ? theme.colors[variant] : 'white';
+  const background = outline ? 'transparent' : theme.colors[variant];
   const border = outline ? "1px solid " + color : "none";
   
   // Use the css helper function to generate CSS from a template literal with interpolations. 
