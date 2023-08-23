@@ -1,48 +1,46 @@
-import { FC, ReactNode } from "react"
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { ThemeInterface } from "@/pages/_app";
 
-export type ButtonProps = {
-  id?: string
-  children?: ReactNode
-  onClick?: () => void
-  variant: keyof ThemeInterface['colors']
-  outline?: boolean
+interface ButtonProps {
   size?: keyof ThemeInterface['size']
+  colorScheme?: keyof ThemeInterface['colors']
+  outline?: boolean
 }
-const ButtonStyled = styled.button<
-  Pick<ButtonProps, 'variant' | 'outline'>
->`
-  font-size: 1em;
-  margin: 1em;
-  padding: 0.25em 1em;
-  border-radius: 3px;
-  cursor: pointer;
 
-  // Set Theme Button
-  color: ${({ theme, variant, outline }) => outline ? theme.colors[variant] : 'white'};
-  border: 2px solid ${({ theme, variant }) => theme.colors[variant]};
-  background-color: ${({ theme, variant, outline }) => outline ? 'transparent' : theme.colors[variant]};
+const Button = styled.button.attrs<ButtonProps>(
+  ({ colorScheme }) => ({
+    colorScheme: colorScheme || 'primary'
+  })
+)`
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 6px 16px;
+  min-width: 64px;
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 0.875rem;
+  letter-spacing: 0.02857em;
+  line-height: 1.75;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+
+  
+  /* Pass a function to compose key-value styles. The function accepts props as argument. Return eventual CSS property and value in "dynamicStyles" */
+  ${(props) => dynamicStyles(props)}
 `
 
+const dynamicStyles = (props: any) => {
+  const { colorScheme, outline, theme } = props;
 
-const Button: FC<ButtonProps> = ({
-  children,
-  onClick,
-  id,
-  variant,
-  outline
-}) => {
-  return (
-    <ButtonStyled
-      id={id}
-      variant={variant}
-      onClick={onClick}
-      outline={outline}
-    >
-      {children}
-    </ButtonStyled>
-  )
-}
+  const color = outline ? theme.colors[colorScheme] : 'white';
+  const background = outline ? 'transparent' : theme.colors[colorScheme];
+  const border = outline ? "1px solid " + color : "none";
+  
+  // Use the css helper function to generate CSS from a template literal with interpolations. 
+  return css`
+    color: ${color};
+    border: ${border};
+    background-color: ${background};
+  `;
+};
 
 export default Button;
